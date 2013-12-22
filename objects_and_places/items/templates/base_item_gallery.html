@@ -1,0 +1,34 @@
+
+{% extends "base.html" %}
+
+{% block title %}{{ place.name }}{% endblock %}
+
+{% block content %}
+<section>
+    <header>
+        <div class="row">
+            <div class="large-12 columns">
+                <h3>{{ place.name }}</h3>
+            </div>
+        </div>
+    </header>
+
+    {% for image in images %}
+    <div class="row">
+        <div class="large-3 columns">
+            <div class="panel">
+                Some text to add cause our internet connection is dead and I'm not
+                able to get the texts that Kasia sent me yesterday
+            </div>
+        </div>
+        <div class="large-9 columns">
+            <figure>
+                <img src="http://127.0.0.1:8000/static/media/images/{{ image.url }}" alt="{{ image.name }}" width="450">
+                <figcaption>{{ image.name }}</figcaption>
+            </figure>
+        </div>
+    </div>
+
+    {% endfor %}
+</section>
+{% endblock %}

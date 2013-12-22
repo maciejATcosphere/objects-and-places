@@ -1,0 +1,201 @@
+{% load static from staticfiles %}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>Full Screen HTML5 Video Slideshow</title>
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+		<script src="{% static "js/modernizr-2.5.3.min.js" %}"></script>
+
+		<script>
+			var video_width = 960;
+			var video_height = 540;
+
+			$(window).resize(function() {
+			    resize();
+			});
+
+			$(window).load(function () {
+			  resize();
+			});
+
+			$(document).ready(function(){
+
+				var screenIndex = 0,
+				preIndex,
+				myPlayer,
+				numScreens = $('.video-js').length,
+				transitionDur = 1000;
+
+
+				$('.pagination li a').on('click', function(e) {
+					e.preventDefault();
+					set_prev_index();
+					screenIndex = $('.pagination li').index($(this).parent('li'));
+					$('.pagination li').removeClass("active");
+					$('.pagination li').eq(screenIndex).addClass("active");
+
+					next_play();
+				});
+
+				play_video();
+
+				function play_video(){
+
+					if (Modernizr.video) {
+
+						myPlayer = document.getElementById('example-video-'+screenIndex);
+
+						myPlayer.addEventListener('ended', function() {
+
+							if(myPlayer.currentTime === myPlayer.duration){
+
+								preIndex = screenIndex;
+								if (screenIndex === (numScreens-1)) {
+									screenIndex = 0;
+
+								} else {
+									screenIndex++;
+								}
+
+								next_play();
+							}else{
+
+								myPlayer.currentTime = 0;
+							}
+
+
+						}, false);
+
+						myPlayer.play();
+					}
+
+				}
+
+
+
+				function set_prev_index(){
+					$('.pagination li').each(function(index){
+
+						if($(this).hasClass("active"))
+						preIndex = index;
+
+					})
+				}
+
+
+
+				function next_play(){
+
+					var oPlayer = document.getElementById('example-video-'+preIndex);
+					oPlayer.currentTime = 0;
+					console.log(oPlayer.currentTime);
+					$('#example-video-'+ preIndex).stop().animate({'opacity':0},1500);
+					$('#example-video-'+ screenIndex).stop().animate({'opacity':1},1000, function(){
+
+						$('.pagination li').removeClass("active");
+						$('.pagination li').eq(screenIndex).addClass("active");
+						play_video();
+
+					});
+
+				}
+
+
+
+			})
+
+			function resize() {
+				var windowWidth = $(window).width(),
+				windowHeight = $(window).height(),
+				r_w = windowHeight / windowWidth,
+				i_w = video_width,
+				i_h = video_height,
+				r_i = i_h / i_w,
+				new_w, new_h, new_left, new_top;
+
+				if( r_w > r_i ) {
+				new_h   = windowHeight;
+				new_w   = windowHeight / r_i;
+				}
+				else {
+				new_h   = windowWidth * r_i;
+				new_w   = windowWidth;
+				}
+
+				$(".bigvideo").css({
+					width   : new_w,
+					height  : new_h,
+					left    : ( windowWidth - new_w ) / 2,
+					top     : ( windowHeight - new_h ) / 2
+				});
+				$('.bigvideo:first,img.bigvideo:first').animate({'opacity':1},1000);
+
+			}
+		</script>
+	<style>
+		body {
+			margin:0;padding:0;}
+		.videowrapper{
+			position:fixed;
+			width:100%;
+			height:100%;
+			overflow:hidden;
+		}
+		.bigvideo{
+			position:absolute;
+			top:0;
+			left:0;
+			opacity:0;
+		}
+		.allvideos{
+			display:none;
+		}
+		.pagination{
+			clear: both;
+			position:fixed;
+			top:0;
+			z-index:2;
+		}
+		.pagination li{
+			display: inline-block;
+			margin-right: 6px;
+		}
+		.pagination li a{
+			display: block;
+			text-indent: -99999px;
+			background: url(/static/video/pagination.png) no-repeat -16px 0;
+			width: 12px;
+			height: 12px;
+		}
+		.pagination li.active a{
+			background-position: 0px 0px;
+		}
+	</style>
+	</head>
+
+	<body>
+		<div class="videowrapper">
+		{% for video in videos %}
+		<video id="example-video-{{ forloop.counter0 }}" class="bigvideo" autoplay width="960" height="540"
+			poster="/static/video/{{video}}.jpg">
+
+			<source src="/static/video/{{video}}.mp4" type="video/mp4">
+		    <source src="/static/video/{{video}}.mov" type='video/quicktime' />
+		    <source src="/static/video/{{video}}.ogv" type='video/ogg' />
+		    <img class="bigvideo" src="/static/video/{{video}}.jpg" />
+
+		</video>
+		{% endfor %}
+		</div>
+
+		<ul class="pagination">
+			{% for video in videos %}
+			<li {% if forloop.counter0 == 0 %}class="active"{% endif %}>
+				<a href="#">{{ video }}</a>
+			</li>
+			{% endfor %}
+		</ul>
+	</body>
+</html>

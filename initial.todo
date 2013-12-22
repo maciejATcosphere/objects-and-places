@@ -1,0 +1,7 @@
+Initial places hierarchy:
+  ☐ Places -> Main images + Description
+  ☐ Places -> Images -> Description (position with respect to image)
+  ☐ Places -> Videos (Youtube + Vimeo) -> Description
+
+Initial objects hierachy:
+  ☐ Objects -> Images -> Description
