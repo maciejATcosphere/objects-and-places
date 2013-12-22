@@ -17,17 +17,15 @@
 			});
 
 			$(window).load(function () {
-			  resize();
+				resize();
 			});
 
 			$(document).ready(function(){
-
 				var screenIndex = 0,
-				preIndex,
-				myPlayer,
-				numScreens = $('.video-js').length,
-				transitionDur = 1000;
-
+					preIndex,
+					myPlayer,
+					numScreens = $('.video-js').length,
+					transitionDur = 1000;
 
 				$('.pagination li a').on('click', function(e) {
 					e.preventDefault();
@@ -42,38 +40,25 @@
 				play_video();
 
 				function play_video(){
-
 					if (Modernizr.video) {
-
 						myPlayer = document.getElementById('example-video-'+screenIndex);
-
 						myPlayer.addEventListener('ended', function() {
-
 							if(myPlayer.currentTime === myPlayer.duration){
-
 								preIndex = screenIndex;
 								if (screenIndex === (numScreens-1)) {
 									screenIndex = 0;
-
 								} else {
 									screenIndex++;
 								}
 
 								next_play();
 							}else{
-
 								myPlayer.currentTime = 0;
 							}
-
-
 						}, false);
-
 						myPlayer.play();
 					}
-
 				}
-
-
 
 				function set_prev_index(){
 					$('.pagination li').each(function(index){
@@ -84,44 +69,36 @@
 					})
 				}
 
-
-
 				function next_play(){
-
 					var oPlayer = document.getElementById('example-video-'+preIndex);
+
 					oPlayer.currentTime = 0;
 					console.log(oPlayer.currentTime);
 					$('#example-video-'+ preIndex).stop().animate({'opacity':0},1500);
 					$('#example-video-'+ screenIndex).stop().animate({'opacity':1},1000, function(){
-
 						$('.pagination li').removeClass("active");
 						$('.pagination li').eq(screenIndex).addClass("active");
 						play_video();
-
 					});
-
 				}
-
-
-
 			})
 
 			function resize() {
 				var windowWidth = $(window).width(),
-				windowHeight = $(window).height(),
-				r_w = windowHeight / windowWidth,
-				i_w = video_width,
-				i_h = video_height,
-				r_i = i_h / i_w,
-				new_w, new_h, new_left, new_top;
+					windowHeight = $(window).height(),
+					r_w = windowHeight / windowWidth,
+					i_w = video_width,
+					i_h = video_height,
+					r_i = i_h / i_w,
+					new_w, new_h, new_left, new_top;
 
 				if( r_w > r_i ) {
-				new_h   = windowHeight;
-				new_w   = windowHeight / r_i;
+					new_h   = windowHeight;
+					new_w   = windowHeight / r_i;
 				}
 				else {
-				new_h   = windowWidth * r_i;
-				new_w   = windowWidth;
+					new_h   = windowWidth * r_i;
+					new_w   = windowWidth;
 				}
 
 				$(".bigvideo").css({
